@@ -1,4 +1,5 @@
 import streamlit as st
+from dotenv import load_dotenv
 import os
 import time
 import pandas as pd
@@ -16,7 +17,7 @@ from services.coaching.llm import LLMCoach
 from services.coaching.tts import TextToSpeech
 from services.coaching.voice_pipeline import VoicePipeline, autoplay_audio
 
-  
+
 def main():
     st.set_page_config(
         page_icon="🏋️‍♀️",
@@ -37,7 +38,11 @@ def main():
 
     if "voice_pipeline" not in st.session_state:
         try:
-            api_key = os.environ.get("GROQ_API_KEY", "GROQ_API_KEY")
+            load_dotenv()
+
+            api_key = os.getenv("GROQ_API_KEY")
+
+            groq_client = Groq(api_key=api_key)
 
             if not api_key and hasattr(st, "secrets") and "GROQ_API_KEY" in st.secrets:
                 api_key = st.secrets["GROQ_API_KEY"]
